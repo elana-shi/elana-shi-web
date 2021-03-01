@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>A Landscape of Aging Dams</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .map-overlay {
+        background-color: #fff;
+        position: absolute;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font-family: sans-serif;
+        margin-top: 10px;
+        margin-left: 10px;
+        padding: 10px;
+        width: 25%;
+        font-size: 14px;
+        color: #000000;
+        opacity: 0.85;
+      border-radius: 3px;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class='map-overlay' id='features'><h2><center>A Landscape of Aging Dams<center></h2>
+      <h4><center>Mapping Kauai's Dams and Flood Hazard Zones<center><h4>
+        <h5><center>Data provided by the National Inventory of Dams and FEMA Flood Map Service Center<center><h5>
+        </div>
+
+    <style>
+      .legend {
+        background-color: #fff;
+        border-radius: 3px;
+        bottom: 30px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        padding: 10px;
+        position: absolute;
+        right: 10px;
+        z-index: 1;
+        opacity: 0.85;
+        }
+
+      .legend h4 {
+        margin: 0 0 10px;
+        }
+
+      .legend div span {
+        border-radius: 50%;
+        display: inline-block;
+        height: 10px;
+        margin-right: 5px;
+        width: 10px;
+        }
+    </style>
+
+
+    <div id="dam-legend" class="legend">
+    <b>Year of Dam Completion</b>
+    <div><span style="background-color: #fff9eb"></span>1890 - 1918</div>
+    <div><span style="background-color: #ffa21f"></span>1919 - 1947</div>
+    <div><span style="background-color: #b67102"></span>1948 - 1976</div>
+    <div><span style="background-color: #5c3f00"></span>1977 - 2004</div>
+    <div><span style="background-color: #b8b8b8"></span>n/a</div>
+    <b>Flood Hazard Zone</b>
+    <div><span style="background-color: #d5260b"></span>1% Flood Hazard Zone</div>
+    <div><i>Equal Interval Classification<i></div>
+    </div>
+
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZWxhbmEtc2hpIiwiYSI6ImNrbGZ4ejJtcjF5c3kydXFlbWY4Z2FiZWkifQ.4IOPmui-oHaDoBlcoTYYng'; // replace this with your access token
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/elana-shi/cklpwejuk45e517r3x1uw975c', // replace this with your style URL
+      center: [-159.500, 21.914],
+      zoom: 11.80
+    });
+
+map.on('click', function(e) {
+  var features = map.queryRenderedFeatures(e.point, {
+    layers: ['dams-dz7wc3'] // replace this with the name of the layer
+  });
+
+  var zoomThreshold = 4;
+
+  if (!features.length) {
+    return;
+  }
+
+  var feature = features[0];
+
+  map.on('click', 'dams-dz7wc3', function (e) {
+  var coordinates = e.features[0].geometry.coordinates.slice();
+  var description = e.features[0].properties.description;
+});
+
+map.on('mouseenter', 'dams-dz7wc3', function () {
+map.getCanvas().style.cursor = 'pointer';
+});
+
+  var popup = new mapboxgl.Popup({ offset: [0, 0] })
+    .setLngLat(feature.geometry.coordinates)
+    .setHTML('<h3>' + feature.properties.dam_name + '</br></h3>'
+    + "Year Completed: " + feature.properties.year_compl + '</br>'
+    + "Year Modified: " + feature.properties.year_modif)
+    .addTo(map);
+});
+
+    </script>
+  </body>
+</html>
