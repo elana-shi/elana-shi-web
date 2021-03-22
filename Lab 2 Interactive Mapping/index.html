@@ -109,17 +109,17 @@
     </div>
   </div>
 
-  // Set the initial visualization upon loading
-  // 3D visualization can be changed by holding down the left and right mouse buttons
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script>
+  // Set the initial visualization upon loading
+  // 3D visualization can be changed by holding down the left and right mouse buttons
     mapboxgl.accessToken = 'pk.eyJ1IjoiZWxhbmEtc2hpIiwiYSI6ImNrbGZ4ejJtcjF5c3kydXFlbWY4Z2FiZWkifQ.4IOPmui-oHaDoBlcoTYYng';
     var map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/elana-shi/ckmfdzhxo4gq217od20zt3hce',
       pitch: 75,
-      bearing: -60,
-      center: [-154.845, 19.465],
+      bearing: -90,
+      center: [-154.84, 19.48],
       zoom: 12.5
     });
 
@@ -199,6 +199,11 @@
 
     map.on('load', function() {
       $.getJSON(
+
+        // Building footprint data curesy of Microsoft
+        // https://github.com/Microsoft/USBuildingFootprints
+        // Data was plotted as 3D polygons in Mapbox Studio, which was included in the imported style for this map
+
         // Data courtesy of the Hawaiian Volcano Observatory staff
         // https://www.sciencebase.gov/catalog/item/5afe0ba7e4b0da30c1bdb9db
         // 2018 preliminary lava data were merged based on field date in QGIS, a string field was added for the date
@@ -236,16 +241,13 @@
         }
       );
     });
+
+    // Code was modified from MapBox Docs: Create a Time Slider and MapBox Docs: Add 3D Terrain to a Map
+    // https://docs.mapbox.com/mapbox-gl-js/example/timeline-animation/
+    // https://docs.mapbox.com/mapbox-gl-js/example/add-terrain/
+
   </script>
 
 </body>
 
 </html>
-
-// Building footprint data curesy of Microsoft
-// https://github.com/Microsoft/USBuildingFootprints
-// Data was plotted as 3D polygons in Mapbox Studio, which was included in the imported style for this map
-
-// Code was modified from MapBox Docs: Create a Time Slider nad MapBox Docs: Add 3D Terrain to a Map
-// https://docs.mapbox.com/mapbox-gl-js/example/timeline-animation/
-// https://docs.mapbox.com/mapbox-gl-js/example/add-terrain/
