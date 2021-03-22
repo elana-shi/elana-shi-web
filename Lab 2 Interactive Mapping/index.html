@@ -3,10 +3,11 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Create a time slider</title>
+  <title>2018 Kīlauea Lower Puna Eruption</title>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -28,7 +29,7 @@
       font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
       position: absolute;
       width: 25%;
-      top: 0;
+      bottom: 0;
       left: 0;
       padding: 10px;
     }
@@ -47,12 +48,6 @@
       margin: 0 0 10px;
     }
 
-    .map-overlay .legend .bar {
-      height: 10px;
-      width: 100%;
-      background: linear-gradient(to right, #fca107, #7f3121);
-    }
-
     .map-overlay input {
       background-color: transparent;
       display: inline-block;
@@ -63,143 +58,180 @@
     }
   </style>
 
+  <style>
+    .legend {
+      background-color: #fff;
+      border-radius: 3px;
+      bottom: 30px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+      padding: 10px;
+      position: absolute;
+      right: 10px;
+      z-index: 1;
+      opacity: 0.85;
+    }
+
+    .legend h4 {
+      margin: 0 0 10px;
+    }
+
+    .legend div span {
+      border-radius: 50%;
+      display: inline-block;
+      height: 10px;
+      margin-right: 5px;
+      width: 10px;
+    }
+  </style>
+
+  <div id="legend" class="legend">
+    <div><span style="background-color: #ff6500"></span>Kilauea Flow Extent</div>
+    <div><span style="background-color: #ebebeb"></span>Hawaii Island Buildings (unaffected)</div>
+    <div><span style="background-color: #700000"></span>Hawaii Island Buildings (affected)</div>
+    Lava data provided by the U.S. Geological Survey
+    </br>Building footprint data provided by Microsoft
+  </div>
+
   <div id="map"></div>
 
   <div class="map-overlay top">
     <div class="map-overlay-inner">
-      <h2>Significant earthquakes in 2015</h2>
-      <label id="month"></label>
-      <input id="slider" type="range" min="0" max="11" step="1" value="0">
-    </div>
-    <div class="map-overlay-inner">
-      <div id="legend" class="legend">
-        <div class="bar"></div>
-        <div>Magnitude (m)</div>
-      </div>
+      <h2>2018 Kīlauea Lower Puna Eruption</h2>
+      On May 3, 2018, lava began erupting in lower Puna at the foot of Hawaii Island's Kīlauea volcano after a series of mild earthquakes.
+      Over the next two months, the lava moved over the Leilani Estates and Kapoho town, destroying over 560 buildings and homes.
+      This map represents new lava extent surveyed between May and August, as well as the impacted buildings. The map
+      also includes the total affected areas at the end of the slider.
+      </map>
+      </br> </br>
+      <b><label id="date"></label></b>
+      <input id="slider" type="range" min="0" max="60" step="1" value="0">
     </div>
   </div>
 
+  // Set the initial visualization upon loading
+  // 3D visualization can be changed by holding down the left and right mouse buttons
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZWxhbmEtc2hpIiwiYSI6ImNrbGZ4ejJtcjF5c3kydXFlbWY4Z2FiZWkifQ.4IOPmui-oHaDoBlcoTYYng';
     var map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/elana-shi/ckmbej3m52ruw17qmk61yl7xp',
-      center: [-155.081, 19.386],
-      zoom: 14
+      style: 'mapbox://styles/elana-shi/ckmfdzhxo4gq217od20zt3hce',
+      pitch: 75,
+      bearing: -60,
+      center: [-154.845, 19.465],
+      zoom: 12.5
     });
 
-    var month = [
-      20160524,
-      20160610,
-      20160719,
-      20160719,
-      20160819,
-      20160920,
-      20161019,
-      20161129,
-      20161214,
-      20170112,
-      20170224,
-      20170330,
-      20170503,
-      20170531,
+    var dates = [
+      '2018/05/05',
+      '2018/05/06',
+      '2018/05/07',
+      '2018/05/08',
+      '2018/05/09',
+      '2018/05/13',
+      '2018/05/14',
+      '2018/05/15',
+      '2018/05/16',
+      '2018/05/17',
+      '2018/05/18',
+      '2018/05/19',
+      '2018/05/20',
+      '2018/05/22',
+      '2018/05/23',
+      '2018/05/24',
+      '2018/05/25',
+      '2018/05/26',
+      '2018/05/27',
+      '2018/05/28',
+      '2018/05/29',
+      '2018/05/30',
+      '2018/05/31',
+      '2018/06/01',
+      '2018/06/03',
+      '2018/06/04',
+      '2018/06/05',
+      '2018/06/06',
+      '2018/06/07',
+      '2018/06/08',
+      '2018/06/09',
+      '2018/06/10',
+      '2018/06/13',
+      '2018/06/14',
+      '2018/06/17',
+      '2018/06/18',
+      '2018/06/19',
+      '2018/06/21',
+      '2018/06/25',
+      '2018/06/26',
+      '2018/06/27',
+      '2018/06/29',
+      '2018/07/01',
+      '2018/07/03',
+      '2018/07/05',
+      '2018/07/09',
+      '2018/07/10',
+      '2018/07/12',
+      '2018/07/16',
+      '2018/07/19',
+      '2018/07/23',
+      '2018/07/25',
+      '2018/07/27',
+      '2018/07/29',
+      '2018/07/31',
+      '2018/08/01',
+      '2018/08/02',
+      '2018/08/05',
+      '2018/08/06',
+      '2018/08/09',
+      'Total Extent' // Merged polygon of all previous lava extent, added as a new feature
     ];
 
-    function filterBy(month) {
-      var filters = ['==', 'month', month];
-      map.setFilter('earthquake-circles', filters);
-      map.setFilter('earthquake-labels', filters);
+    // Finds matches between the array (dates) objects and features under the date field
+    // Map filter maps each individual date after finding match, based on slider input (see filterBy(date) on line 234)
+    function filterBy(date) {
+      var filters = ['==', 'date', dates[date]];
+      map.setFilter('flow-extent', filters);
 
-      // Set the label to the month
-      document.getElementById('month').textContent = months[month];
+      // Set the label to the date
+      document.getElementById('date').textContent = dates[date];
     }
 
     map.on('load', function() {
-      // Data courtesy of http://earthquake.usgs.gov/
-      // Query for significant earthquakes in 2015 URL request looked like this:
-      // http://earthquake.usgs.gov/fdsnws/event/1/query
-      //    ?format=geojson
-      //    &starttime=2015-01-01
-      //    &endtime=2015-12-31
-      //    &minmagnitude=6'
-      //
-      // Here we're using d3 to help us make the ajax request but you can use
-      // Any request method (library or otherwise) you wish.
-      d3.json(
-        'https://docs.mapbox.com/mapbox-gl-js/assets/significant-earthquakes-2015.geojson',
-        function(err, data) {
-          if (err) throw err;
+      $.getJSON(
+        // Data courtesy of the Hawaiian Volcano Observatory staff
+        // https://www.sciencebase.gov/catalog/item/5afe0ba7e4b0da30c1bdb9db
+        // 2018 preliminary lava data were merged based on field date in QGIS, a string field was added for the date
+        'https://raw.githubusercontent.com/elana-shi/elana-shi-web/gh-pages/Lab%202%20Interactive%20Mapping/Kilaeua_Flow2018.geojson',
+        function(data) {
 
-          // Create a month property value based on time
-          // used to filter against.
-          data.features = data.features.map(function(d) {
-            d.properties.month = new Date(d.properties.time).getMonth();
-            return d;
-          });
+          flowGeoJSONdata = data;
 
-          map.addSource('earthquakes', {
+          map.addSource('flow', {
             'type': 'geojson',
-            data: data
+            'data': flowGeoJSONdata
           });
 
           map.addLayer({
-            'id': 'earthquake-circles',
-            'type': 'circle',
-            'source': 'earthquakes',
+            'id': 'flow-extent',
+            'type': 'fill',
+            'source': 'flow',
+            'layout': {},
             'paint': {
-              'circle-color': [
-                'interpolate',
-                ['linear'],
-                ['get', 'mag'],
-                6,
-                '#FCA107',
-                8,
-                '#7F3121'
-              ],
-              'circle-opacity': 0.75,
-              'circle-radius': [
-                'interpolate',
-                ['linear'],
-                ['get', 'mag'],
-                6,
-                20,
-                8,
-                40
-              ]
+              'fill-color': '#ff6500',
+              'fill-opacity': 1
             }
           });
 
-          map.addLayer({
-            'id': 'earthquake-labels',
-            'type': 'symbol',
-            'source': 'earthquakes',
-            'layout': {
-              'text-field': [
-                'concat',
-                ['to-string', ['get', 'mag']],
-                'm'
-              ],
-              'text-font': [
-                'Open Sans Bold',
-                'Arial Unicode MS Bold'
-              ],
-              'text-size': 12
-            },
-            'paint': {
-              'text-color': 'rgba(0,0,0,0.5)'
-            }
-          });
-
-          // Set filter to first month of the year
-          // 0 = January
+          // Set filter to first date in survey array
+          // 0 = 2018/05/05
           filterBy(0);
 
           document
             .getElementById('slider')
             .addEventListener('input', function(e) {
-              var month = parseInt(e.target.value, 10);
-              filterBy(month);
+              var date = parseInt(e.target.value, 10);
+              filterBy(date);
             });
         }
       );
@@ -209,3 +241,11 @@
 </body>
 
 </html>
+
+// Building footprint data curesy of Microsoft
+// https://github.com/Microsoft/USBuildingFootprints
+// Data was plotted as 3D polygons in Mapbox Studio, which was included in the imported style for this map
+
+// Code was modified from MapBox Docs: Create a Time Slider nad MapBox Docs: Add 3D Terrain to a Map
+// https://docs.mapbox.com/mapbox-gl-js/example/timeline-animation/
+// https://docs.mapbox.com/mapbox-gl-js/example/add-terrain/
